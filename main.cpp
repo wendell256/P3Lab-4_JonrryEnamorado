@@ -12,7 +12,11 @@ int** llenarmatrix(int**,int);
 int** fillcofactores(int**,int**,int,int,int);
 bool verpar(int);
 void freeMatrix(int,int**);
-
+char** char_crearmatrix(int);
+char** llenartablero(char**,int);
+void freecharmatrix(int,char**);
+void printcharmatrix(char**,int);
+int determinante(int**);
 
 int main(){
 	char resp1='y';
@@ -92,17 +96,39 @@ void ejercicio1(){
 		pivote = false;
 	}
 	int numpivote=matrix[fila][col];
+	
 	if(!pivote){
 		numpivote*=-1;	
 	}
-	m_cofactor = fillcofactores(m_cofactor,matrix,size,fila,col);
 	
+	m_cofactor = fillcofactores(m_cofactor,matrix,size,fila,col);
 	cout<<"MATRIZ DE COFACTORES:"<<endl;
 	printMatrix(size-1,m_cofactor);
-	cout<<"PIVOTE:"<<endl<<numpivote<<endl;
+	
+	if(pivote){
+		cout<<"PIVOTE:"<<endl<<"+"<<numpivote<<endl;
+	}else{
+
+		cout<<"PIVOTE:"<<endl<<numpivote<<endl;
+	}
+	//hacer determinante
+	if(size-1==3){
+	int resultado = determinante(m_cofactor)*numpivote;
+	cout<<"Determinante:"<<resultado<<endl;
+	}
+	//liberar memoria
 	freeMatrix(size,matrix);
 	freeMatrix(size-1,m_cofactor);
 }
+//sacar determinante
+int determinante(int** matrix){
+	int determinante=0;
+	determinante=((matrix[0][0]*matrix[1][1]*matrix[2][2])+(matrix[1][0]*matrix[2][1]*matrix[0][2])+
+			(matrix[2][0]*matrix[0][1]*matrix[1][2])-(matrix[0][2]*matrix[1][1]*matrix[2][0])-
+			(matrix[1][2]*matrix[2][1]*matrix[0][0])-(matrix[2][2]*matrix[0][1]*matrix[1][0]));
+	return determinante;
+}
+
 
 //llenar matrix on randoms
 int** llenarmatrix(int** matrix, int size){
@@ -186,5 +212,85 @@ void freeMatrix(int n, int** matrix){
 
 
 void ejercicio2(){
+	int turno=0,gane=0; //jugador1 = 0, jugador2 = 1; una vez uno gane, gane = 1
+	char** tablero;
+	tablero = char_crearmatrix(9);
+	tablero = llenartablero(tablero,9);
+	int avanzar=0;
+	while(gane== 0){
+		printcharmatrix(tablero,9);
+		cout<<endl;
+		switch(turno){
+			case 0:
+				cout<<"Turno jugador uno"<<endl;
+				cout<<"ingrese un numero para continuar"<<endl;					
+				cin>>avanzar;
+				turno=1;
+			break;
+			case 1:
+				cout<<"Turno jugador dos"<<endl;
+				cout<<"ingrese un numero para continuar"<<endl;
+				cin>>avanzar;
+				turno=0;
+			break;
+
+		}
+	}
+	freecharmatrix(9,tablero);
 
 }
+
+char** char_crearmatrix(int n){
+	char** retVal = new char*[n];
+
+  	for(int i=0;i<n;i++)
+    		retVal[i]=new char[n];
+
+  	return retVal;
+
+}
+
+char** llenartablero(char** tablero, int size){
+	int cont = 0,cont2 = 0;//contadores que marcan las orillas del tablero
+	for(int i=0;i<size;i++){
+		for(int j=0;j<size;j++){
+			if(i==0&&j!=0){
+				tablero[i][j]='0'+cont;
+				cont++;
+			}
+			else if(j==0){
+				tablero[i][j]='0' + cont2;
+				cont2++;
+			}
+			else if((i==4 && j==4)||(i==5 && j==5)){
+				tablero[i][j]='o';
+			}else if((i==4 && j==5)||(i==5 && j==4)){
+				tablero[i][j]='x';
+			}else{
+				tablero[i][j]='.';
+			}
+		}
+	}
+	return tablero;
+}
+
+void printcharmatrix(char** tablero, int size){
+	for(int i=0;i<size;i++){
+		for(int j=0;j<size;j++){
+      		cout<<" "<<tablero[i][j];
+
+    		}
+    		cout<<endl;
+	}
+
+}
+
+//iberar memoria char
+void freecharmatrix(int n, char** matrix){
+
+	for(int i=0;i<n;i++)
+		delete[] matrix[i];
+
+	delete [] matrix;
+}
+
