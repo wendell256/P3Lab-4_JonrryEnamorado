@@ -113,7 +113,7 @@ void ejercicio1(){
 	}
 	//hacer determinante
 	if(size-1==3){
-	int resultado = determinante(m_cofactor)*numpivote;
+	int resultado = determinante(m_cofactor);
 	cout<<"Determinante:"<<resultado<<endl;
 	}
 	//liberar memoria
